@@ -76,6 +76,66 @@ posterousjs.reading.getSites = function(callback) {
 
 
 /**
+ *  posterousjs.reading.getPosts
+ *  
+ *  Returns an array of objects containing information for the posts
+ *  from a Posterous site.
+ *
+ *  See the Posterous API site for details on the post properties.
+ *  http://posterous.com/api/reading 
+ *
+ */
+posterousjs.reading.getPosts = function(site_id, callback, options) {
+
+    var opts = options;
+    var defaults = {
+        num_posts: 1,
+        page: null,
+        tag: null
+    };
+
+    var attr = function(a) {
+        if (opts) {
+            return opts[a] ? opts[a] : defaults[a];
+        }
+        else {
+            return defaults[a];
+        }
+    };
+    
+    var parse = function(xml) {
+        var json = $.xml2json(xml);
+        if (callback != undefined && callback != null) {
+            callback(json);
+        }
+    };
+
+    var request_opts = {'site_id':site_id};
+    $.each(defaults, function(i, val) {
+        if (val != null) {
+            request_opts[i] = val;
+        }
+    });
+    $.each(options, function(i, val) {
+        if (val != null) {
+            request_opts[i] = val;
+        }
+    });
+    $.ajax({
+        type: 'GET',
+        url: 'http://posterous.com/api/readposts',
+        dataType: 'xml',
+        data: request_opts,
+        success: parse,
+        error: function() {
+            alert('posterousjs.reading.getPosts error');
+        }
+    });
+
+};
+
+
+/**
  *  posterousjs.reading.getImages
  *
  *  Returns an array of objects containing information for the images
