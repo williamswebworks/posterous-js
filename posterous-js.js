@@ -19,8 +19,74 @@
 
 
 if (!posterousjs) { var posterousjs = {}; }
+if (!posterousjs.reading) { posterousjs.reading = {}; }
 
-posterousjs.getImages = function(site_id, callback, options) {
+
+/**
+ *  posterousjs.reading.getSites
+ *
+ *  Returns an array of objects containing information for
+ *  the caller's posterous sites.
+ *
+ *  Site information objects will have the following members:
+ *  id, name, url, is_private, is_primary, comments_enabled, num_posts
+ *
+ *  NOTE: This requires Posterous authentication through HTTP.
+ *
+ */
+posterousjs.reading.getSites = function(callback) {
+    
+    var parse = function(xml) {
+        var s = [];
+        var sites = $(xml).find('rsp:first').find('site'); 
+        for (var i = 0; i < sites.length; i++) {
+            var id = $(sites[i]).find('id:first').text();
+            var name = $(sites[i]).find('name:first').text();
+            var url = $(sites[i]).find('url:first').text();
+            var is_private = $(sites[i]).find('private:first').text();
+            var is_primary = $(sites[i]).find('primary:first').text();
+            var comments_enabled = $(sites[i]).find('commentsenabled:first').text();
+            var num_posts = parseInt( $(sites[i]).find('num_posts:first').text() );
+            s.push({
+                'id': id,
+                'name': name,
+                'url': url,
+                'is_private': (is_private == 'true') ? true : false,
+                'is_primary': (is_primary == 'true') ? true : false,
+                'comments_enabled': (comments_enabled == 'true') ? true : false,
+                'num_posts': num_posts
+            });
+        }
+        if (callback != undefined && callback != null) {
+            callback(s);
+        }
+    };
+
+    $.ajax({
+        type: 'GET',
+        url: 'http://posterous.com/api/getsites',
+        dataType: 'xml',
+        success: parse,
+        error: function() {
+            alert('posterousjs.reading.getSites error');
+        }
+    });
+
+};
+
+
+/**
+ *  posterousjs.reading.getImages
+ *
+ *  Returns an array of objects containing information for the images
+ *  from a posterous site.
+ *  
+ *  Image information objects will have the following members:
+ *  id, url, width, height, post_link, post_title, date
+ *
+ */
+posterousjs.reading.getImages = function(site_id, callback, options) {
+
     var opts = options;
     // Possible options:
     // num_posts (integer, default 1)
@@ -84,7 +150,8 @@ posterousjs.getImages = function(site_id, callback, options) {
         dataType: 'xml',
         success: parse,
         error: function() {
-            alert('posterousjs error');
+            alert('posterousjs.reading.getImages error');
         }
     });
+
 };
