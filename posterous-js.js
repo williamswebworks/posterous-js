@@ -96,7 +96,7 @@ posterousjs.reading.getPosts = function(site_id, callback, options) {
 
     var attr = function(a) {
         if (opts) {
-            return opts[a] ? opts[a] : defaults[a];
+            return (opts[a] != undefined) ? opts[a] : defaults[a];
         }
         else {
             return defaults[a];
@@ -104,20 +104,25 @@ posterousjs.reading.getPosts = function(site_id, callback, options) {
     };
     
     var parse = function(xml) {
-        var json = $.xml2json(xml);
+        var posts = $(xml).find('rsp:first').find('post');
+        var p = [];
+        $.each(posts, function() {
+            var json = $.xml2json(this);
+            p.push(json);
+        });
         if (callback != undefined && callback != null) {
-            callback(json);
+            callback(p);
         }
     };
 
     var request_opts = {'site_id':site_id};
     $.each(defaults, function(i, val) {
-        if (val != null) {
+        if (val != undefined && val != null) {
             request_opts[i] = val;
         }
     });
     $.each(options, function(i, val) {
-        if (val != null) {
+        if (val != undefined && val != null) {
             request_opts[i] = val;
         }
     });
@@ -160,7 +165,7 @@ posterousjs.reading.getImages = function(site_id, callback, options) {
     };
     var attr = function(a) {
         if (opts) {
-            return opts[a] ? opts[a] : defaults[a];
+            return (opts[a] != undefined) ? opts[a] : defaults[a];
         }
         else {
             return defaults[a];

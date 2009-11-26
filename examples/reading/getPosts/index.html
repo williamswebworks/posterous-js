@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <title>Posterous API Test - posterousjs.reading.getPosts</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <style>
+        #forms {
+            width: 200px;
+            margin-right: 10px;
+            float: left;
+            border-right: 1px solid #000000;
+        }
+        #posterous-posts {
+            width: 400px;
+            float: left;
+        }
+        .post {
+            padding: 5px;
+            border-bottom: 1px solid #cccccc;
+        }
+    </style>
+</head>
+<body>
+
+<div id="forms">
+    Posterous Site ID:
+    <br/>
+    <input id="site_id" type="text" value="765138"/>
+    <br/>
+    <br/>
+    Tag:
+    <br/>
+    <input id="tag" type="text" value=""/>
+    <br/>
+    <br/>
+    Posts:
+    <br/>
+    <input id="num_posts" type="text" value="1"/>
+    <br/>
+    <br/>
+    Page:
+    <br/>
+    <input id="page" type="text" value=""/>
+    <br/>
+    <br/>
+    <input id="submit_button" type="button" value="Submit"/>
+</div>
+
+<h3>Your Posterous Posts</h3>
+<div id="posterous-posts">
+</div>
+
+</body>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script src="../../../jquery.xml2json.pack.js"></script>
+<script src="../../../posterous-js.js"></script>
+<script>
+$(document).ready(function() {
+    var callback = function(posts) {
+        $.each(posts, function() {
+            var id = 'post-' + this.id;
+            $('#posterous-posts').append('<div class="post" id="'+id+'"></div>');
+            var p = $('#'+id);
+            $(p).append('<h3><a href="'+this.url+'">'+this.title+'</a></h3>');
+            $(p).append(this.body);
+            $(p).append('Posted by ' + this.author);
+            $(p).append('<br/>on ' + this.date);
+        });
+    };
+
+    $('#submit_button').click(function() {
+        $('#posterous-posts').empty();
+        var site_id = $('input#site_id').val();
+        var tag = $('input#tag').val();
+        var page = $('input#page').val();
+        var options = {
+            num_posts: parseInt($('input#num_posts').val())    
+        };
+        if (tag.length > 0) {
+            options['tag'] = tag;
+        }
+        if (page.length > 0) {
+            options['page'] = page;
+        }
+
+        posterousjs.reading.getPosts(site_id, callback, options);
+    });
+});
+</script>
+</html>
