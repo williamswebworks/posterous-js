@@ -180,7 +180,7 @@ posterousjs.reading.getImages = function(site_id, callback, options) {
             var title = $(posts[j]).find('title:first').text();
             var date_str = $(posts[j]).find('date:first').text();
             var media_tags = $(posts[j]).find('media');
-            for (var i = 0; i < media_tags.length && (attr('num_images') == 'all' || i < attr('num_images')); i++) {
+            for (var i = 0; i < media_tags.length && (attr('num_images') == 'all' || i < parseInt(attr('num_images'))); i++) {
                 var media_type = $(media_tags[i]).find('type:first').text();
                 if (media_type == 'image') {
                     var img = $(media_tags[i]).find(attr('image_size')+':first');

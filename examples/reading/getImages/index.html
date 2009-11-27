@@ -67,7 +67,7 @@ $(document).ready(function() {
         $('#posterous-posts #posterous-image').append('<span>Loading...</span>');
         var options = {
             num_posts: parseInt($('#num_posts').val()),
-            num_images: parseInt($('#num_images').val()),
+            num_images: $('#num_images').val(),
             image_size: $('#image_size').val()
         };
         var t = $('#tag').val();
