@@ -26,7 +26,7 @@ http://posterous.com/api
 * Note: This project currently requires jquery 1.3.2.
 http://jquery.com/
 
-Current Functionality:
+Current Functionality (version 1.0.0):
 * getSites - returns information about each Posterous site for the user
 * getPosts - returns information including the post body for posts for a 
 	     given Posterous site
